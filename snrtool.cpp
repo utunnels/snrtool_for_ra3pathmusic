@@ -1,6 +1,7 @@
 #include "simex.h"
+#include <iostream>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 
 void testfunction(char * path) {
 	SIMEX_init();
@@ -19,6 +20,7 @@ void testfunction(char * path) {
 	if (info)
 	{
 		SIMEX_read(instance, info, 0);
+		printf("%d %d", info->sound[0]->num_samples, info->sound[0]->sample_rate); 
 		info->sound[0]->codec = s16l_int;
 		SIMEX_write(instance2, info, 0);
 		SIMEX_freesinfo(info);
@@ -30,8 +32,9 @@ void testfunction(char * path) {
 
 int main(int argc, char* argv[])
 {
-	char* infile = argc > 1 ? argv[1] : "input.wav";
-	char* outfile = argc > 2 ? argv[2] : "output";
+	int cc = argc > 1 ? std::stoi(argv[1]) : s16b_int;
+	char* infile = argc > 2 ? argv[2] : "input.wav";
+	char* outfile = argc > 3 ? argv[3] : "output";
 	int l = strlen(infile);
 	if (l > 4 && strcmp(infile + l - 4, ".snr")==0) {
 		testfunction(infile);
@@ -48,7 +51,7 @@ int main(int argc, char* argv[])
 	if (info)
 	{
 		SIMEX_read(instance, info, 0);
-		info->sound[0]->codec = s16b_int;// ealayer3_int;
+		info->sound[0]->codec = (unsigned char)cc;// ealayer3_int;
 		info->sound[0]->playloc = PLAYLOC_STREAM;
 		SIMEX_write(instance2, info, 0);
 		SIMEX_freesinfo(info);
